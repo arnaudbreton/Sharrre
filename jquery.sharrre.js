@@ -49,6 +49,7 @@
       facebook: { //http://developers.facebook.com/docs/reference/plugins/like/
         url: '',  //if you need to personalize url button
         urlCount: false,  //if you want to use personnalize button url on global counter
+        enableFeedDialog: false, // if you want to use the Feed Dialog (https://developers.facebook.com/docs/reference/dialogs/feed/) instead of sharer (deprecated)
         action: 'like',
         layout: 'button_count',
         width: '',
@@ -321,8 +322,15 @@
     googlePlus: function(opt){
       window.open("https://plus.google.com/share?hl="+opt.buttons.googlePlus.lang+"&url="+encodeURIComponent((opt.buttons.googlePlus.url !== '' ? opt.buttons.googlePlus.url : opt.url)), "", "toolbar=0, status=0, width=900, height=500");
     },
-    facebook: function(opt){
-      window.open("http://www.facebook.com/sharer/sharer.php?u="+encodeURIComponent((opt.buttons.facebook.url !== '' ? opt.buttons.facebook.url : opt.url))+"&t="+opt.text+"", "", "toolbar=0, status=0, width=900, height=500");
+    facebook: function(opt) {
+        if (opt.buttons.facebook.enableFeedDialog && FB && FB.ui) {
+            FB.ui({
+                method : 'feed',
+                link : opt.buttons.facebook.url !== '' ? opt.buttons.facebook.url : opt.url
+            });
+        } else {
+            window.open("http://www.facebook.com/sharer/sharer.php?u=" + encodeURIComponent((opt.buttons.facebook.url !== '' ? opt.buttons.facebook.url : opt.url)) + "&t=" + opt.text + "", "", "toolbar=0, status=0, width=900, height=500");
+        }
     },
     twitter: function(opt){
       window.open("https://twitter.com/intent/tweet?text="+encodeURIComponent(opt.text)+"&url="+encodeURIComponent((opt.buttons.twitter.url !== '' ? opt.buttons.twitter.url : opt.url))+(opt.buttons.twitter.via !== '' ? '&via='+opt.buttons.twitter.via : ''), "", "toolbar=0, status=0, width=650, height=360");
